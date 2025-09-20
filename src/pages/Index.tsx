@@ -5,6 +5,7 @@ import LiveStreamSection from "@/components/LiveStreamSection";
 import VicarSection from "@/components/VicarSection";
 import DepartmentsSection from "@/components/DepartmentsSection";
 import ServiceSection from "@/components/ServiceSection";
+import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -18,6 +19,7 @@ const Index = () => {
         <LiveStreamSection />
         <VicarSection />
         <DepartmentsSection/>
+        <ContactSection/>
         
       </main>
       <Footer />

@@ -45,9 +45,9 @@ const DepartmentsSection = () => {
       icon: "👨‍💼",
     },
     {
-      title: "K.A.Y.A (Kenya Anglican Youth Association)",
+      title: "K.A.Y.O  (Kenya Anglican Youth Organization)",
       description:
-        "KAYA empowers youth to engage in discipleship, fellowship, and service while growing in Christ and discovering their gifts.",
+        "KAYO empowers youth to engage in discipleship, fellowship, and service while growing in Christ and discovering their gifts.",
       image: kayaImg,
       icon: "👨‍🎓",
     },

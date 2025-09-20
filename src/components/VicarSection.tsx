@@ -33,14 +33,14 @@ const VicarSection = () => {
       quote: "Leading our congregation with faith, compassion, and dedication.",
     },
     {
-      name: "David Muchai",
+      name: "Ev. David Muchai",
       role: "Evangelist",
       duration: "Current",
       image: "/images/Ev. David.png",
       quote: "Spreading the Gospel and nurturing believers in Christ.",
     },
     {
-      name: "Susan Gituku",
+      name: "Ev. Susan Gituku",
       role: "Lay Reader",
       duration: "Current",
       image: "/images/Lay.png",
@@ -54,7 +54,7 @@ const VicarSection = () => {
     { name: "James Mwangi", duration: "01-03-2008 – 31-12-2010" },
     { name: "Lydia Nyambura", duration: "01-01-2011 – 01-01-2016" },
     { name: "Germano Kaburu", duration: "01-01-2016 – 31-12-2020" },
-    { name: "James Njoka", duration: "01-01-2021 – 2024" },
+    { name: "James Njoka", duration: "01-01-2021 – 01-08-2025" },
   ];
 
   return (
