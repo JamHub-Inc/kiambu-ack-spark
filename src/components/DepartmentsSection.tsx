@@ -3,7 +3,7 @@ import { useInView } from "framer-motion";
 import { useRef } from "react";
 import mothersUnionImg from "@/assets/Choir.jpeg";
 import kamaImg from "@/assets/KAMA.jpeg";
-import kayaImg from "@/assets/Kaya.jpeg";
+import kayaImg from "@/assets/KAYA.jpeg";
 import childrenImg from "@/assets/About.jpeg";
 import choirImg from "@/assets/Choir.jpeg";
 import worshipImg from "@/assets/Praise.jpeg";
