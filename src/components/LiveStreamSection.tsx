@@ -1,57 +1,88 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
-import { useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, Clock, Users, Play } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Clock, Users, Play } from "lucide-react";
 
 const LiveStreamSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
-  const [streams, setStreams] = useState([]);
+  const [streams, setStreams] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [countdown, setCountdown] = useState("");
 
-  // Fetch live streams from YouTube API
   useEffect(() => {
-    const fetchLiveStreams = async () => {
+    const fetchStreams = async () => {
       try {
-        // Get the YouTube API key from environment variables
         const apiKey = import.meta.env.VITE_YOUTUBE_API_KEY;
+        const channelId = "UCegro5FeF66wVl4LWsMBHMA"; 
 
-        // Debugging - print the API key to make sure it's being accessed
-        console.log("YouTube API Key:", apiKey);
-
-        // Ensure the API key is set
         if (!apiKey) {
           console.error("YouTube API key is missing!");
           setLoading(false);
           return;
         }
 
-        const response = await fetch(
-          `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=UCegro5FeF66wVl4LWsMBHMA&type=video&eventType=live&key=${apiKey}`
+        let response = await fetch(
+          `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&type=video&eventType=live&key=${apiKey}`
         );
-        const data = await response.json();
-        setStreams(data.items);
+        let data = await response.json();
+
+        if (data.items && data.items.length > 0) {
+          setStreams(data.items);
+        } else {
+          const latestResponse = await fetch(
+            `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&maxResults=3&order=date&type=video&key=${apiKey}`
+          );
+          const latestData = await latestResponse.json();
+          setStreams(latestData.items || []);
+        }
+
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching live streams:", error);
+        console.error("Error fetching YouTube streams:", error);
         setLoading(false);
       }
     };
 
-    fetchLiveStreams();
+    fetchStreams();
+  }, []);
+
+  // Countdown to next Sunday 8:30 AM
+  useEffect(() => {
+    const updateCountdown = () => {
+      const now = new Date();
+      let nextService = new Date();
+
+      // Sunday 8:30 AM
+      nextService.setDate(
+        now.getDate() + ((7 - now.getDay() + 0) % 7 || 7)
+      );
+      nextService.setHours(8, 30, 0, 0);
+
+      const diff = nextService.getTime() - now.getTime();
+
+      if (diff > 0) {
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+        setCountdown(`${days}d ${hours}h ${minutes}m`);
+      } else {
+        setCountdown("Starting Soon...");
+      }
+    };
+
+    updateCountdown();
+    const timer = setInterval(updateCountdown, 60000); // update every min
+    return () => clearInterval(timer);
   }, []);
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-        delayChildren: 0.1,
-      },
+      transition: { staggerChildren: 0.2, delayChildren: 0.1 },
     },
   };
 
@@ -60,15 +91,12 @@ const LiveStreamSection = () => {
     visible: {
       opacity: 1,
       y: 0,
-      transition: {
-        duration: 0.6,
-        ease: [0.4, 0, 0.2, 1] as any,
-      },
+      transition: { duration: 0.6, ease: [0.4, 0, 0.2, 1] as any },
     },
   };
 
   return (
-    <section id="live-stream" className="py-20 bg-church-cream">
+    <section id="live-stream" className="py-16 bg-church-cream">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           ref={ref}
@@ -83,29 +111,32 @@ const LiveStreamSection = () => {
               Live Worship & Services
             </h2>
             <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-              Join us online for live worship services, prayer meetings, and Bible studies. 
-              Experience the presence of God from wherever you are.
+              Join us online for live worship services, prayer meetings, and Bible
+              studies. Experience the presence of God from wherever you are.
             </p>
           </motion.div>
 
-          {/* Live Streams Grid */}
+          {/* Streams Grid */}
           <motion.div variants={itemVariants}>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Main Live Stream */}
+              {/* Main Stream */}
               <div className="lg:col-span-2">
                 {loading ? (
                   <div className="text-center p-6">Loading live stream...</div>
                 ) : streams.length > 0 ? (
                   <Card className="church-card overflow-hidden">
                     <div className="relative">
-                      <div className="aspect-video bg-gray-200 flex items-center justify-center">
-                        <div className="text-center">
-                          <Play className="w-16 h-16 text-church-gold mx-auto mb-4" />
-                          <p className="text-muted-foreground">Live Stream Player</p>
-                          <p className="text-sm text-muted-foreground mt-2">
-                            YouTube player will be embedded here
-                          </p>
-                        </div>
+                      <div className="aspect-video bg-black">
+                        <iframe
+                          width="100%"
+                          height="100%"
+                          src={`https://www.youtube.com/embed/${streams[0].id.videoId}?autoplay=1`}
+                          title={streams[0]?.snippet?.title || "Live Stream"}
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                          className="w-full h-full rounded-lg"
+                        ></iframe>
                       </div>
 
                       {streams[0]?.snippet?.liveBroadcastContent === "live" && (
@@ -131,26 +162,83 @@ const LiveStreamSection = () => {
                       <Button className="church-button w-full">
                         <Play className="w-5 h-5 mr-2" />
                         {streams[0]?.snippet?.liveBroadcastContent === "live"
-                          ? "Join Live Stream"
-                          : "Watch Later"}
+                          ? "Watching Live Stream"
+                          : "Watch Recording"}
                       </Button>
                     </CardContent>
                   </Card>
                 ) : (
-                  <div className="text-center p-6">No live streams available at the moment.</div>
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
+                    className="flex flex-col items-center justify-center text-center bg-gradient-to-br from-church-navy/90 to-church-gold/80 rounded-2xl p-10 shadow-xl"
+                  >
+                    {/* Icon */}
+                    <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mb-6 animate-pulse">
+                      <Play className="w-10 h-10 text-white" />
+                    </div>
+
+                    {/* Message */}
+                    <h3 className="text-2xl font-bold text-white mb-4">
+                      No Live Stream at the Moment
+                    </h3>
+                    <p className="text-white/80 max-w-md mb-6">
+                      Please check back during our Sunday services at{" "}
+                      <span className="font-semibold">8:30 AM</span> and{" "}
+                      <span className="font-semibold">10:30 AM</span>, or explore past sermons
+                      on our YouTube channel.
+                    </p>
+
+                    {/* Countdown */}
+                    <div className="flex items-center justify-center space-x-4 mb-6">
+                      {countdown.split(" ").map((part, idx) => (
+                        <motion.div
+                          key={idx}
+                          initial={{ rotateX: -90, opacity: 0 }}
+                          animate={{ rotateX: 0, opacity: 1 }}
+                          transition={{ duration: 0.6, delay: idx * 0.2 }}
+                          className="bg-black/40 px-4 py-3 rounded-lg shadow-md text-center"
+                        >
+                          <span className="block text-2xl md:text-3xl font-bold text-church-gold drop-shadow-md animate-pulse">
+                            {part}
+                          </span>
+                          <span className="block text-xs uppercase tracking-wide text-white/70">
+                            {idx === 0 && part.includes("d")
+                              ? "Days"
+                              : idx === 1
+                              ? "Hours"
+                              : "Minutes"}
+                          </span>
+                        </motion.div>
+                      ))}
+                    </div>
+
+                    {/* CTA */}
+                    <a
+                      href="https://www.youtube.com/@franko_scar"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block px-6 py-3 bg-white text-church-navy font-semibold rounded-full shadow hover:bg-gray-100 transition-colors"
+                    >
+                      Visit Our Channel
+                    </a>
+                  </motion.div>
                 )}
               </div>
 
-              {/* Upcoming Streams */}
+              {/* Upcoming + Prayer */}
               <div className="space-y-6">
-                <h3 className="text-2xl font-bold text-church-navy">Upcoming Services</h3>
+                <h3 className="text-2xl font-bold text-church-navy">
+                  Upcoming & Recent Services
+                </h3>
                 {streams.slice(1).map((stream) => (
                   <Card key={stream.id.videoId} className="church-card">
                     <CardContent className="p-4">
                       <div className="flex items-center space-x-3 mb-3">
                         <Clock className="w-5 h-5 text-church-gold" />
                         <span className="text-sm font-medium text-church-navy">
-                          {stream.snippet?.publishedAt}
+                          {new Date(stream.snippet?.publishedAt).toLocaleString()}
                         </span>
                       </div>
                       <h4 className="font-semibold text-church-navy mb-2">
@@ -159,22 +247,43 @@ const LiveStreamSection = () => {
                       <p className="text-sm text-muted-foreground mb-3">
                         {stream.snippet?.description}
                       </p>
-                      <Button variant="outline" size="sm" className="church-button-outline w-full">
-                        Set Reminder
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="church-button-outline w-full"
+                        asChild
+                      >
+                        <a
+                          href={`https://www.youtube.com/watch?v=${stream.id.videoId}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Watch
+                        </a>
                       </Button>
                     </CardContent>
                   </Card>
                 ))}
 
-                {/* Quick Access */}
+                {/* Prayer Request */}
                 <Card className="church-card bg-gradient-hero text-white">
                   <CardContent className="p-6 text-center">
                     <h4 className="font-bold mb-2">Need Prayer?</h4>
                     <p className="text-sm opacity-90 mb-4">
                       Submit your prayer request and our team will pray for you.
                     </p>
-                    <Button variant="outline" className="church-button-outline bg-primary border-white text-white hover:bg-white hover:text-church-navy">
-                      Prayer Request
+                    <Button
+                      variant="outline"
+                      className="church-button-outline bg-primary border-white text-white hover:bg-white hover:text-church-navy"
+                      asChild
+                    >
+                      <a
+                        href="https://wa.me/254796219542?text=Hello%20ACK%20St.%20Philip%27s%20Kihingo,%20I%20would%20like%20to%20submit%20a%20prayer%20request."
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Prayer Request via WhatsApp
+                      </a>
                     </Button>
                   </CardContent>
                 </Card>
