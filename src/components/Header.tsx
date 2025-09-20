@@ -51,7 +51,7 @@ const Header = () => {
             variant="default"
             className="bg-church-gold hover:bg-church-gold/90 text-white font-semibold px-6 rounded-full shadow-md transition-all"
             >
-            <a href="#donate">Donate</a>
+            <a href="#donate">Offering</a>
            </Button>
           </div>
 

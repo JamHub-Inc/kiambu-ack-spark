@@ -145,12 +145,12 @@ const DepartmentsSection = () => {
                   <p className="text-lg text-church-navy/90 leading-relaxed mb-6">
                     {dept.description}
                   </p>
-                <a
+                {/* <a
   href="#donate"
   className="inline-block px-6 py-3 bg-church-gold text-white rounded-lg font-medium hover:bg-church-navy transition-colors duration-300 shadow-md hover:shadow-lg"
 >
   Support This Ministry
-</a>
+</a> */}
 
                 </motion.div>
               </motion.div>

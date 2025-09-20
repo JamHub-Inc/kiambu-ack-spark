@@ -13,7 +13,7 @@ const slides = [
     subtitle: "A Place of Worship, Community, and Faith",
     description:
       "Join us in celebrating God's love and building a stronger community together.",
-    cta: "Donate",
+    cta: "Offering",
   },
   {
     image: churchExterior,
@@ -21,7 +21,7 @@ const slides = [
     subtitle: "Building Community Through Christ",
     description:
       "Experience meaningful worship and connect with fellow believers in our welcoming church family.",
-    cta: "Donate",
+    cta: "Offering",
   },
   {
     image: communityPrayer,
@@ -29,7 +29,7 @@ const slides = [
     subtitle: "Worship With Us Online",
     description:
       "Can't make it in person? Join our live stream every Sunday at 8:30 AM and 10:30 AM.",
-    cta: "Donate",
+    cta: "Offering",
   },
 ];
 const verses = [

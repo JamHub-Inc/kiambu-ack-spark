@@ -40,7 +40,7 @@ const VicarSection = () => {
       quote: "Spreading the Gospel and nurturing believers in Christ.",
     },
     {
-      name: "Ev. Susan Gituku",
+      name: "Susan Gituku",
       role: "Lay Reader",
       duration: "Current",
       image: "/images/Lay.png",
@@ -49,12 +49,12 @@ const VicarSection = () => {
   ];
 
   const pastVicars = [
-    { name: "Wilson Kinuthia", duration: "02-10-2005 – 25-02-2007" },
-    { name: "Dickson Gachugu", duration: "01-07-2007– 28-08-2008" },
-    { name: "James Mwangi", duration: "01-03-2008 – 31-12-2010" },
-    { name: "Lydia Nyambura", duration: "01-01-2011 – 01-01-2016" },
-    { name: "Germano Kaburu", duration: "01-01-2016 – 31-12-2020" },
-    { name: "James Njoka", duration: "01-01-2021 – 01-08-2025" },
+    { name: "Rev. Wilson Kinuthia", duration: "02-10-2005 – 25-02-2007" },
+    { name: "Rev. Dickson Gachugu", duration: "01-07-2007– 28-08-2008" },
+    { name: "Rev. James Mwangi", duration: "01-03-2008 – 31-12-2010" },
+    { name: "Rev. Lydia Nyambura", duration: "01-01-2011 – 01-01-2016" },
+    { name: "Rev. Germano Kaburu", duration: "01-01-2016 – 31-12-2020" },
+    { name: "Rev. James Njoka", duration: "01-01-2021 – _-08-2025" },
   ];
 
   return (
